@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Store BD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #06b6d4;
+            --dark: #0f172a;
+            --darker: #0a1122;
+            --light: #e2e8f0;
+            --gray: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(100, 116, 139, 0.2);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--light);
+            min-height: 100vh;
+            background-image: url('https://i.ibb.co.com/Z1fsCWgK/pngtree-dreamy-night-sky-view-through-window-with-moon-and-stars-nighttime-image-16335408-1.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 17, 34, 0.85);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--light);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+        
+        .nav-link {
+            padding: 10px 20px;
+            border-radius: 6px;
+            color: var(--light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: rgba(37, 99, 235, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .user-profile:hover {
+            background: rgba(37, 99, 235, 0.2);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .admin-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 30px 0;
+        }
+        
+        .page-title {
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-align: center;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Files Grid */
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .file-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .file-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary);
+        }
+        
+        .file-banner {
+            height: 200px;
+            width: 100%;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .file-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .file-card:hover .file-banner img {
+            transform: scale(1.05);
+        }
+        
+        .file-content {
+            padding: 24px;
+        }
+        
+        .file-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+        
+        .file-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--light);
+            line-height: 1.4;
+        }
+        
+        .file-price {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .file-price.free {
+            color: var(--success);
+        }
+        
+        .file-desc {
+            color: var(--gray);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .file-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+        
+        /* Vault Grid */
+        .vault-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        
+        .vault-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+        
+        .vault-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .vault-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+        
+        .vault-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--light);
+        }
+        
+        .vault-status {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .vault-status.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        .vault-status.approved {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .vault-status.rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .vault-details {
+            margin-bottom: 20px;
+        }
+        
+        .vault-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .vault-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .vault-value {
+            color: var(--light);
+            font-weight: 600;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--light);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 28px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--light);
+            font-size: 14px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 14px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .screenshot-item {
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid var(--card-border);
+            transition: all 0.3s;
+        }
+        
+        .screenshot-item:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+        
+        .screenshot-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+        
+        /* Payment Info */
+        .payment-info {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .payment-info h4 {
+            color: var(--success);
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .payment-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.4s;
+            min-width: 320px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .toast-icon.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .toast-icon.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .toast-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        .toast-content {
+            flex: 1;
+        }
+        
+        .toast-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+        
+        .toast-message {
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--gray);
+        }
+        
+        .loading i {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .loading-text {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        .skeleton {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 24px;
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--light);
+        }
+        
+        /* Image Upload */
+        .image-upload {
+            border: 2px dashed var(--card-border);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .image-upload:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+        
+        .image-upload i {
+            font-size: 48px;
+            color: var(--gray);
+            margin-bottom: 16px;
+        }
+        
+        .upload-progress {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        /* File Preview */
+        .file-preview {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .file-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .files-grid, .vault-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .screenshots-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+        
+        /* Utility */
+        .hidden {
+            display: none;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .w-100 {
+            width: 100%;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo" id="logo">
+                    <i class="fas fa-code"></i>
+                    <div class="logo-text">Code Store BD</div>
+                </a>
+                
+                <div class="nav-buttons">
+                    <a href="#" class="nav-link active" id="homeLink">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    <a href="#" class="nav-link" id="vaultLink">
+                        <i class="fas fa-vault"></i>
+                        Vault
+                    </a>
+                    
+                    <div class="auth-buttons" id="authButtons">
+                        <button class="btn btn-secondary" id="loginBtn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Login
+                        </button>
+                        <button class="btn btn-primary" id="registerBtn">
+                            <i class="fas fa-user-plus"></i>
+                            Register
+                        </button>
+                    </div>
+                    
+                    <div class="user-profile hidden" id="userProfile">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <div class="user-info">
+                            <div class="user-name" id="userName">User</div>
+                        </div>
+                        <div class="admin-badge hidden" id="adminBadge">ADMIN</div>
+                    </div>
+                    
+                    <a href="CS_ADMIN_FULL_FIXED.html" class="btn btn-danger hidden" id="adminPanelBtn">
+                        <i class="fas fa-cogs"></i>
+                        Admin Panel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Home Page -->
+        <div class="main-content" id="homePage">
+            <h1 class="page-title">All Files</h1>
+            <div class="files-grid" id="filesGrid">
+                <!-- Files will load here -->
+            </div>
+        </div>
+        
+        <!-- Vault Page -->
+        <div class="main-content hidden" id="vaultPage">
+            <h1 class="page-title">My Vault</h1>
+            <div class="vault-grid" id="vaultGrid">
+                <!-- Vault items will load here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Login</div>
+                <button class="modal-close" id="closeLogin">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="loginEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required>
+            </div>
+            <button class="btn btn-primary w-100" id="submitLogin">
+                <i class="fas fa-sign-in-alt"></i>
+                Login
+            </button>
+            <button class="btn btn-secondary w-100 mt-20" id="switchToRegister">
+                Don't have account? Register
+            </button>
+        </div>
+    </div>
+    
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Register</div>
+                <button class="modal-close" id="closeRegister">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-input" id="registerName" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="registerEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="registerPassword" placeholder="Create password (min. 6 characters)" required minlength="6">
+            </div>
+            <button class="btn btn-primary w-100" id="submitRegister">
+                <i class="fas fa-user-plus"></i>
+                Register
+            </button>
+            <button class="btn btn-secondary w-100 mt-20" id="switchToLogin">
+                Already have account? Login
+            </button>
+        </div>
+    </div>
+    
+    <!-- File Details Modal -->
+    <div class="modal" id="fileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">File Details</div>
+                <button class="modal-close" id="closeFileModal">&times;</button>
+            </div>
+            <div class="form-group">
+                <div class="file-banner mb-20">
+                    <img id="fileModalBanner" src="" alt="File Banner" onerror="this.src='https://via.placeholder.com/500x300/1e293b/94a3b8?text=Code+Store'">
+                </div>
+                <h3 id="fileModalTitle">File Title</h3>
+                <p id="fileModalDesc" style="color: var(--gray); margin: 10px 0;"></p>
+                <div style="display: flex; justify-content: space-between; margin: 15px 0;">
+                    <span>Price:</span>
+                    <strong id="fileModalPrice">$0</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 15px 0;">
+                    <span>Category:</span>
+                    <span id="fileModalCategory">General</span>
+                </div>
+                
+                <div class="payment-info" id="paymentInfo" style="display: none;">
+                    <h4><i class="fas fa-money-bill-wave"></i> Payment Information</h4>
+                    <div class="payment-detail">
+                        <span>Send Money:</span>
+                        <strong id="paymentAmount">৳500</strong>
+                    </div>
+                    <div class="payment-detail">
+                        <span>To Number:</span>
+                        <strong id="paymentNumber">01XXXXXXXXX</strong>
+                    </div>
+                    <div class="payment-detail">
+                        <span>Payment Method:</span>
+                        <span id="paymentMethod">Bkash</span>
+                    </div>
+                </div>
+                
+                <div id="paymentSection" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Transaction ID *</label>
+                        <input type="text" class="form-input" id="transactionId" placeholder="Enter transaction ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Screenshot *</label>
+                        <div class="image-upload" id="screenshotUpload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload payment screenshot</p>
+                            <p class="form-text">Upload to ImgBB (Max 10MB)</p>
+                        </div>
+                        <div class="upload-progress" id="uploadProgress">
+                            <div class="form-text">Uploading...</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                        </div>
+                        <div class="file-preview" id="screenshotPreview">
+                            <img id="screenshotPreviewImg" src="" alt="Screenshot Preview">
+                        </div>
+                        <input type="hidden" id="screenshotUrl" value="">
+                    </div>
+                </div>
+                
+                <div id="fileScreenshots" style="display: none;">
+                    <h4 style="margin: 20px 0 10px 0;"><i class="fas fa-images"></i> Screenshots</h4>
+                    <div class="screenshots-grid" id="screenshotsGrid">
+                        <!-- Screenshots will load here -->
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary w-100" id="actionButton">
+                <i class="fas fa-download"></i>
+                Download Now
+            </button>
+        </div>
+    </div>
+    
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyArwHqyI9Om48iChEeGBVPRxHLz2sKLAoU",
+            authDomain: "code-store-bd.firebaseapp.com",
+            databaseURL: "https://code-store-bd-default-rtdb.firebaseio.com",
+            projectId: "code-store-bd",
+            storageBucket: "code-store-bd.firebasestorage.app",
+            messagingSenderId: "935626127018",
+            appId: "1:935626127018:web:f86d9065246bf7ed4a82d3",
+            measurementId: "G-MDJSF653QY"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+        
+        // ImgBB API Key
+        const IMGBB_API_KEY = 'e66fb3b47eddcba6378bd57e91671258';
+        
+        // App State
+        const appState = {
+            currentUser: null,
+            files: [],
+            vault: [],
+            currentPage: 'home',
+            appConfig: null,
+            userRole: 'user',
+            currentFileId: null
+        };
+        
+        // DOM Elements
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const fileModal = document.getElementById('fileModal');
+        const authButtons = document.getElementById('authButtons');
+        const userProfile = document.getElementById('userProfile');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const adminBadge = document.getElementById('adminBadge');
+        const adminPanelBtn = document.getElementById('adminPanelBtn');
+        const homePage = document.getElementById('homePage');
+        const vaultPage = document.getElementById('vaultPage');
+        const homeLink = document.getElementById('homeLink');
+        const vaultLink = document.getElementById('vaultLink');
+        const filesGrid = document.getElementById('filesGrid');
+        const vaultGrid = document.getElementById('vaultGrid');
+        
+        // Toast Function
+        function showToast(type, title, message) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+            
+            toast.innerHTML = `
+                <div class="toast-icon ${type}">
+                    <i class="fas ${icons[type] || 'fa-info-circle'}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+            
+            document.getElementById('toastContainer').appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+        
+        // Check Maintenance Mode
+        function checkMaintenance() {
+            db.ref('appConfig/maintenance').once('value', snapshot => {
+                if (snapshot.exists() && snapshot.val() === true) {
+                    document.body.innerHTML = `
+                        <div class="container" style="display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center;">
+                            <div>
+                                <i class="fas fa-tools" style="font-size: 64px; color: var(--warning); margin-bottom: 20px;"></i>
+                                <h1 style="color: var(--light); margin-bottom: 10px;">🚧 Maintenance Mode</h1>
+                                <p style="color: var(--gray);">We're currently performing maintenance. Please check back soon!</p>
+                            </div>
+                        </div>
+                    `;
+                    return true;
+                }
+                return false;
+            });
+        }
+        
+        // Load App Config
+        function loadAppConfig() {
+            db.ref('appConfig').once('value', snapshot => {
+                const config = snapshot.val() || {
+                    bkashNumber: '01XXXXXXXXX',
+                    nagadNumber: '01XXXXXXXXX',
+                    rocketNumber: '01XXXXXXXXX',
+                    registration: true
+                };
+                appState.appConfig = config;
+            });
+        }
+        
+        // Load Files with Skeleton Loading
+        function loadFiles() {
+            filesGrid.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <div class="loading-text">Loading files...</div>
+                </div>
+            `;
+            
+            db.ref('files').on('value', snapshot => {
+                const files = [];
+                snapshot.forEach(child => {
+                    const file = child.val();
+                    file.id = child.key;
+                    files.push(file);
+                });
+                
+                appState.files = files;
+                displayFiles();
+            }, error => {
+                console.error('Error loading files:', error);
+                filesGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Failed to Load Files</h3>
+                        <p>Please check your connection and try again</p>
+                    </div>
+                `;
+                showToast('error', 'Load Failed', 'Failed to load files. Please refresh.');
+            });
+        }
+        
+        // Display Files
+        function displayFiles() {
+            filesGrid.innerHTML = '';
+            
+            if (appState.files.length === 0) {
+                filesGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-file-code"></i>
+                        <h3>No Files Available</h3>
+                        <p>Check back later for new files!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            appState.files.forEach(file => {
+                const isFree = file.price === 0 || file.price === '0' || file.price === 'free';
+                const bannerImage = file.bannerImage || 'https://via.placeholder.com/400x225/1e293b/94a3b8?text=Code+Store';
+                
+                const card = document.createElement('div');
+                card.className = 'file-card';
+                card.innerHTML = `
+                    <div class="file-banner">
+                        <img src="${bannerImage}" alt="${file.title}" onerror="this.src='https://via.placeholder.com/400x225/1e293b/94a3b8?text=Error'">
+                    </div>
+                    <div class="file-content">
+                        <div class="file-header">
+                            <div class="file-title">${file.title}</div>
+                            <div class="file-price ${isFree ? 'free' : ''}">
+                                ${isFree ? 'FREE' : `৳${file.price}`}
+                            </div>
+                        </div>
+                        <div class="file-desc">${file.description || 'No description available'}</div>
+                        <div class="file-actions">
+                            <button class="btn ${isFree ? 'btn-primary' : 'btn-secondary'} w-100" 
+                                    onclick="viewFile('${file.id}')">
+                                <i class="fas ${isFree ? 'fa-download' : 'fa-shopping-cart'}"></i>
+                                ${isFree ? 'Download Now' : 'Buy Now'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                filesGrid.appendChild(card);
+            });
+        }
+        
+        // View File Details
+        function viewFile(fileId) {
+            const file = appState.files.find(f => f.id === fileId);
+            if (!file) {
+                showToast('error', 'Error', 'File not found');
+                return;
+            }
+            
+            appState.currentFileId = fileId;
+            const isFree = file.price === 0 || file.price === '0' || file.price === 'free';
+            const bannerImage = file.bannerImage || 'https://via.placeholder.com/500x300/1e293b/94a3b8?text=Code+Store';
+            
+            document.getElementById('fileModalTitle').textContent = file.title;
+            document.getElementById('fileModalDesc').textContent = file.description || 'No description';
+            document.getElementById('fileModalPrice').textContent = isFree ? 'FREE' : `৳${file.price}`;
+            document.getElementById('fileModalCategory').textContent = file.category || 'General';
+            document.getElementById('fileModalBanner').src = bannerImage;
+            
+            const paymentInfo = document.getElementById('paymentInfo');
+            const paymentSection = document.getElementById('paymentSection');
+            const actionButton = document.getElementById('actionButton');
+            const fileScreenshots = document.getElementById('fileScreenshots');
+            const screenshotsGrid = document.getElementById('screenshotsGrid');
+            
+            // Reset screenshot upload
+            resetScreenshotUpload();
+            
+            if (isFree) {
+                paymentInfo.style.display = 'none';
+                paymentSection.style.display = 'none';
+                fileScreenshots.style.display = 'none';
+                actionButton.innerHTML = '<i class="fas fa-download"></i> Download Now';
+                actionButton.onclick = () => downloadFile(fileId);
+            } else {
+                paymentInfo.style.display = 'block';
+                paymentSection.style.display = 'block';
+                
+                // Set payment info
+                document.getElementById('paymentAmount').textContent = `৳${file.price}`;
+                document.getElementById('paymentNumber').textContent = appState.appConfig?.bkashNumber || '01XXXXXXXXX';
+                document.getElementById('paymentMethod').textContent = 'Bkash';
+                
+                actionButton.innerHTML = '<i class="fas fa-shopping-cart"></i> Submit Payment';
+                actionButton.onclick = () => submitPayment(fileId);
+                
+                // Show screenshots if available
+                if (file.screenshots && file.screenshots.length > 0) {
+                    fileScreenshots.style.display = 'block';
+                    screenshotsGrid.innerHTML = '';
+                    file.screenshots.forEach((screenshot, index) => {
+                        if (!screenshot) return;
+                        const imgDiv = document.createElement('div');
+                        imgDiv.className = 'screenshot-item';
+                        imgDiv.innerHTML = `<img src="${screenshot}" alt="Screenshot ${index + 1}" onerror="this.style.display='none'" onclick="viewScreenshot('${screenshot}')">`;
+                        screenshotsGrid.appendChild(imgDiv);
+                    });
+                } else {
+                    fileScreenshots.style.display = 'none';
+                }
+            }
+            
+            fileModal.classList.add('active');
+        }
+        
+        // Reset Screenshot Upload
+        function resetScreenshotUpload() {
+            document.getElementById('transactionId').value = '';
+            document.getElementById('screenshotUrl').value = '';
+            document.getElementById('uploadProgress').style.display = 'none';
+            document.getElementById('screenshotPreview').style.display = 'none';
+            document.getElementById('progressFill').style.width = '0%';
+        }
+        
+        // Upload Screenshot to ImgBB
+        async function uploadScreenshot(file) {
+            const progressFill = document.getElementById('progressFill');
+            const uploadProgress = document.getElementById('uploadProgress');
+            const screenshotPreview = document.getElementById('screenshotPreview');
+            const screenshotPreviewImg = document.getElementById('screenshotPreviewImg');
+            
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                showToast('error', 'Invalid File', 'Please select an image file');
+                return null;
+            }
+            
+            if (file.size > 10 * 1024 * 1024) {
+                showToast('error', 'File Too Large', 'Image must be less than 10MB');
+                return null;
+            }
+            
+            showToast('info', 'Uploading', 'Uploading screenshot...');
+            uploadProgress.style.display = 'block';
+            
+            try {
+                // Create FormData
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('key', IMGBB_API_KEY);
+                
+                // Show progress animation
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    progressFill.style.width = `${progress}%`;
+                    if (progress >= 90) clearInterval(progressInterval);
+                }, 200);
+                
+                // Upload to ImgBB
+                const response = await fetch('https://api.imgbb.com/1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+                
+                if (!response.ok) {
+                    throw new Error(`Upload failed: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.url) {
+                    const imageUrl = result.data.url;
+                    
+                    // Show preview
+                    screenshotPreviewImg.src = imageUrl;
+                    screenshotPreview.style.display = 'block';
+                    uploadProgress.style.display = 'none';
+                    
+                    showToast('success', 'Upload Complete', 'Screenshot uploaded successfully');
+                    return imageUrl;
+                } else {
+                    throw new Error(result.error?.message || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('ImgBB upload error:', error);
+                uploadProgress.style.display = 'none';
+                showToast('error', 'Upload Failed', 'Failed to upload screenshot. Please try again.');
+                return null;
+            }
+        }
+        
+        // View Screenshot in full screen
+        function viewScreenshot(url) {
+            const viewer = document.createElement('div');
+            viewer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.95);
+                z-index: 2000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            `;
+            
+            viewer.innerHTML = `
+                <img src="${url}" style="max-width: 95%; max-height: 95%; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+                <button style="position: absolute; top: 30px; right: 30px; background: rgba(0,0,0,0.7); border: 1px solid var(--card-border); color: white; font-size: 30px; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
+            `;
+            
+            document.body.appendChild(viewer);
+            
+            viewer.addEventListener('click', (e) => {
+                if (e.target === viewer || e.target.tagName === 'BUTTON') {
+                    document.body.removeChild(viewer);
+                }
+            });
+        }
+        
+        // Download File
+        function downloadFile(fileId) {
+            if (!appState.currentUser) {
+                showToast('error', 'Login Required', 'Please login to download files');
+                loginModal.classList.add('active');
+                fileModal.classList.remove('active');
+                return;
+            }
+            
+            const file = appState.files.find(f => f.id === fileId);
+            if (!file || !file.downloadUrl) {
+                showToast('error', 'Error', 'Download link not available');
+                return;
+            }
+            
+            // Increment download count
+            const newCount = (file.downloads || 0) + 1;
+            db.ref(`files/${fileId}/downloads`).set(newCount);
+            
+            // Open download link
+            window.open(file.downloadUrl, '_blank');
+            showToast('success', 'Download Started', 'File download has started');
+            fileModal.classList.remove('active');
+        }
+        
+        // Submit Payment
+        async function submitPayment(fileId) {
+            if (!appState.currentUser) {
+                showToast('error', 'Login Required', 'Please login to purchase files');
+                loginModal.classList.add('active');
+                fileModal.classList.remove('active');
+                return;
+            }
+            
+            const file = appState.files.find(f => f.id === fileId);
+            const transactionId = document.getElementById('transactionId').value.trim();
+            const screenshotUrl = document.getElementById('screenshotUrl').value.trim();
+            
+            if (!transactionId) {
+                showToast('error', 'Validation Error', 'Please enter transaction ID');
+                return;
+            }
+            
+            if (!screenshotUrl) {
+                showToast('error', 'Validation Error', 'Please upload payment screenshot');
+                return;
+            }
+            
+            const paymentData = {
+                userId: appState.currentUser.uid,
+                fileId: fileId,
+                fileName: file.title,
+                amount: file.price,
+                transactionId: transactionId,
+                screenshotUrl: screenshotUrl,
+                status: 'pending',
+                timestamp: Date.now()
+            };
+            
+            showToast('info', 'Processing', 'Submitting payment...');
+            
+            try {
+                const paymentId = Date.now().toString();
+                
+                // Save payment
+                await db.ref(`payments/${paymentId}`).set(paymentData);
+                
+                // Add to vault
+                const vaultData = {
+                    fileId: fileId,
+                    paymentId: paymentId,
+                    status: 'pending',
+                    timestamp: Date.now()
+                };
+                
+                await db.ref(`vault/${appState.currentUser.uid}/${fileId}`).set(vaultData);
+                
+                showToast('success', 'Payment Submitted', 'Your payment has been submitted for review');
+                fileModal.classList.remove('active');
+                
+                // Clear form
+                resetScreenshotUpload();
+                
+                // Switch to vault page
+                switchPage('vault');
+                
+            } catch (error) {
+                console.error('Payment error:', error);
+                showToast('error', 'Payment Failed', 'Failed to submit payment. Please try again.');
+            }
+        }
+        
+        // Load Vault with Skeleton Loading
+        function loadVault() {
+            if (!appState.currentUser) return;
+            
+            vaultGrid.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <div class="loading-text">Loading vault...</div>
+                </div>
+            `;
+            
+            db.ref(`vault/${appState.currentUser.uid}`).once('value', snapshot => {
+                const vaultItems = [];
+                snapshot.forEach(child => {
+                    const item = child.val();
+                    item.id = child.key;
+                    vaultItems.push(item);
+                });
+                
+                appState.vault = vaultItems;
+                displayVault();
+            }).catch(error => {
+                console.error('Error loading vault:', error);
+                vaultGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Failed to Load Vault</h3>
+                        <p>Please try again later</p>
+                    </div>
+                `;
+            });
+        }
+        
+        // Display Vault
+        function displayVault() {
+            vaultGrid.innerHTML = '';
+            
+            if (appState.vault.length === 0) {
+                vaultGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-vault"></i>
+                        <h3>Your Vault is Empty</h3>
+                        <p>Purchase files to see them here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Create promises for loading all vault items
+            const promises = appState.vault.map(async (item) => {
+                try {
+                    const [fileSnapshot, paymentSnapshot] = await Promise.all([
+                        db.ref(`files/${item.fileId}`).once('value'),
+                        db.ref(`payments/${item.paymentId}`).once('value')
+                    ]);
+                    
+                    const file = fileSnapshot.val();
+                    const payment = paymentSnapshot.val();
+                    
+                    if (!file) return null;
+                    
+                    const vaultItem = document.createElement('div');
+                    vaultItem.className = 'vault-item';
+                    vaultItem.innerHTML = `
+                        <div class="vault-header">
+                            <div class="vault-title">${file.title}</div>
+                            <div class="vault-status ${item.status}">${item.status}</div>
+                        </div>
+                        <div class="vault-details">
+                            <div class="vault-detail">
+                                <span class="vault-label">Price:</span>
+                                <span class="vault-value">৳${file.price}</span>
+                            </div>
+                            <div class="vault-detail">
+                                <span class="vault-label">Date:</span>
+                                <span class="vault-value">${new Date(item.timestamp).toLocaleDateString()}</span>
+                            </div>
+                            ${payment?.transactionId ? `
+                                <div class="vault-detail">
+                                    <span class="vault-label">Transaction ID:</span>
+                                    <span class="vault-value">${payment.transactionId}</span>
+                                </div>
+                            ` : ''}
+                            ${item.status === 'rejected' && payment?.rejectionReason ? `
+                                <div class="vault-detail">
+                                    <span class="vault-label">Reason:</span>
+                                    <span class="vault-value" style="color: var(--danger);">${payment.rejectionReason}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${item.status === 'approved' ? 
+                            `<button class="btn btn-primary w-100" onclick="downloadVaultFile('${item.fileId}')">
+                                <i class="fas fa-download"></i>
+                                Download File
+                            </button>` :
+                            `<button class="btn btn-secondary w-100" disabled>
+                                <i class="fas fa-clock"></i>
+                                ${item.status === 'pending' ? 'Pending Review' : 'Rejected'}
+                            </button>`
+                        }
+                    `;
+                    vaultGrid.appendChild(vaultItem);
+                } catch (error) {
+                    console.error('Error loading vault item:', error);
+                    return null;
+                }
+            });
+            
+            // Show loading until all promises resolve
+            Promise.all(promises).then(() => {
+                // All vault items loaded
+            });
+        }
+        
+        // Download Vault File
+        function downloadVaultFile(fileId) {
+            db.ref(`files/${fileId}`).once('value', snapshot => {
+                const file = snapshot.val();
+                if (file && file.downloadUrl) {
+                    // Increment download count
+                    const newCount = (file.downloads || 0) + 1;
+                    db.ref(`files/${fileId}/downloads`).set(newCount);
+                    
+                    window.open(file.downloadUrl, '_blank');
+                    showToast('success', 'Download Started', 'File download has started');
+                } else {
+                    showToast('error', 'Error', 'Download link not available');
+                }
+            });
+        }
+        
+        // Switch Page
+        function switchPage(page) {
+            // Update active nav link
+            homeLink.classList.remove('active');
+            vaultLink.classList.remove('active');
+            
+            if (page === 'home') {
+                homeLink.classList.add('active');
+                homePage.classList.remove('hidden');
+                vaultPage.classList.add('hidden');
+                displayFiles();
+            } else if (page === 'vault') {
+                if (!appState.currentUser) {
+                    showToast('error', 'Login Required', 'Please login to view vault');
+                    loginModal.classList.add('active');
+                    return;
+                }
+                vaultLink.classList.add('active');
+                vaultPage.classList.remove('hidden');
+                homePage.classList.add('hidden');
+                loadVault();
+            }
+            
+            appState.currentPage = page;
+        }
+        
+        // Update User UI
+        function updateUserUI() {
+            if (appState.currentUser) {
+                authButtons.classList.add('hidden');
+                userProfile.classList.remove('hidden');
+                
+                const displayName = appState.currentUser.displayName || 'User';
+                userName.textContent = displayName;
+                userAvatar.textContent = displayName.charAt(0).toUpperCase();
+                
+                // Check if user is admin
+                db.ref(`users/${appState.currentUser.uid}/role`).once('value', snapshot => {
+                    const role = snapshot.val();
+                    appState.userRole = role || 'user';
+                    
+                    if (role === 'admin') {
+                        adminBadge.classList.remove('hidden');
+                        adminPanelBtn.classList.remove('hidden');
+                    } else {
+                        adminBadge.classList.add('hidden');
+                        adminPanelBtn.classList.add('hidden');
+                    }
+                });
+            } else {
+                authButtons.classList.remove('hidden');
+                userProfile.classList.add('hidden');
+                adminBadge.classList.add('hidden');
+                adminPanelBtn.classList.add('hidden');
+                switchPage('home');
+            }
+        }
+        
+        // Auth Functions
+        async function login(email, password) {
+            showToast('info', 'Logging In', 'Please wait...');
+            
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                appState.currentUser = userCredential.user;
+                
+                // Get user data
+                const snapshot = await db.ref(`users/${appState.currentUser.uid}`).once('value');
+                const userData = snapshot.val();
+                
+                if (!userData) {
+                    // First time login, create user data
+                    const newUserData = {
+                        uid: appState.currentUser.uid,
+                        displayName: appState.currentUser.displayName || 'User',
+                        email: appState.currentUser.email,
+                        role: 'user',
+                        createdAt: Date.now()
+                    };
+                    
+                    await db.ref(`users/${appState.currentUser.uid}`).set(newUserData);
+                }
+                
+                updateUserUI();
+                loginModal.classList.remove('active');
+                
+                showToast('success', 'Welcome Back!', `Hello ${appState.currentUser.displayName || 'User'}!`);
+                
+                // Clear form
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                let message = 'Login failed. Please try again.';
+                if (error.code === 'auth/user-not-found') message = 'User not found. Please register.';
+                else if (error.code === 'auth/wrong-password') message = 'Wrong password. Please try again.';
+                else if (error.code === 'auth/invalid-email') message = 'Invalid email format.';
+                else if (error.code === 'auth/user-disabled') message = 'Account disabled. Contact support.';
+                else if (error.code === 'auth/too-many-requests') message = 'Too many attempts. Try again later.';
+                
+                showToast('error', 'Login Failed', message);
+            }
+        }
+        
+        async function register(name, email, password) {
+            // Check if registration is open
+            if (appState.appConfig?.registration === false) {
+                showToast('error', 'Registration Closed', 'New registrations are currently disabled.');
+                return;
+            }
+            
+            showToast('info', 'Creating Account', 'Please wait...');
+            
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                // Update user profile
+                await userCredential.user.updateProfile({
+                    displayName: name
+                });
+                
+                // Save user data to database
+                const userData = {
+                    uid: userCredential.user.uid,
+                    displayName: name,
+                    email: email,
+                    role: 'user',
+                    createdAt: Date.now()
+                };
+                
+                await db.ref(`users/${userCredential.user.uid}`).set(userData);
+                
+                appState.currentUser = auth.currentUser;
+                updateUserUI();
+                registerModal.classList.remove('active');
+                
+                showToast('success', 'Welcome!', `Account created successfully, ${name}!`);
+                
+                // Clear form
+                document.getElementById('registerName').value = '';
+                document.getElementById('registerEmail').value = '';
+                document.getElementById('registerPassword').value = '';
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                
+                let message = 'Registration failed. Please try again.';
+                if (error.code === 'auth/email-already-in-use') message = 'Email already registered. Try login.';
+                else if (error.code === 'auth/weak-password') message = 'Password too weak. Use at least 6 characters.';
+                else if (error.code === 'auth/invalid-email') message = 'Invalid email format.';
+                else if (error.code === 'auth/operation-not-allowed') message = 'Registration not allowed.';
+                
+                showToast('error', 'Registration Failed', message);
+            }
+        }
+        
+        function logout() {
+            auth.signOut().then(() => {
+                appState.currentUser = null;
+                appState.userRole = 'user';
+                updateUserUI();
+                showToast('success', 'Logged Out', 'You have been logged out successfully');
+            });
+        }
+        
+        // Initialize App
+        function initApp() {
+            // Check maintenance mode
+            if (checkMaintenance()) return;
+            
+            // Load app config
+            loadAppConfig();
+            
+            // Setup screenshot upload
+            const screenshotUpload = document.getElementById('screenshotUpload');
+            const screenshotInput = document.createElement('input');
+            screenshotInput.type = 'file';
+            screenshotInput.accept = 'image/*';
+            screenshotInput.style.display = 'none';
+            document.body.appendChild(screenshotInput);
+            
+            screenshotUpload.addEventListener('click', () => screenshotInput.click());
+            
+            screenshotInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const imageUrl = await uploadScreenshot(file);
+                if (imageUrl) {
+                    document.getElementById('screenshotUrl').value = imageUrl;
+                }
+                
+                screenshotInput.value = '';
+            });
+            
+            // Auth state listener
+            auth.onAuthStateChanged(user => {
+                appState.currentUser = user;
+                updateUserUI();
+                if (user) {
+                    loadVault();
+                }
+            });
+            
+            // Event Listeners
+            
+            // Navigation
+            homeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchPage('home');
+            });
+            
+            vaultLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (!appState.currentUser) {
+                    showToast('error', 'Login Required', 'Please login to view vault');
+                    loginModal.classList.add('active');
+                    return;
+                }
+                switchPage('vault');
+            });
+            
+            // User profile click - logout
+            userProfile.addEventListener('click', logout);
+            
+            // Login/Register buttons
+            document.getElementById('loginBtn').addEventListener('click', () => {
+                loginModal.classList.add('active');
+            });
+            
+            document.getElementById('registerBtn').addEventListener('click', () => {
+                registerModal.classList.add('active');
+            });
+            
+            // Modal close buttons
+            document.getElementById('closeLogin').addEventListener('click', () => {
+                loginModal.classList.remove('active');
+            });
+            
+            document.getElementById('closeRegister').addEventListener('click', () => {
+                registerModal.classList.remove('active');
+            });
+            
+            document.getElementById('closeFileModal').addEventListener('click', () => {
+                fileModal.classList.remove('active');
+                resetScreenshotUpload();
+            });
+            
+            // Switch between login/register
+            document.getElementById('switchToRegister').addEventListener('click', () => {
+                loginModal.classList.remove('active');
+                registerModal.classList.add('active');
+            });
+            
+            document.getElementById('switchToLogin').addEventListener('click', () => {
+                registerModal.classList.remove('active');
+                loginModal.classList.add('active');
+            });
+            
+            // Form submissions
+            document.getElementById('submitLogin').addEventListener('click', () => {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                if (email && password) {
+                    login(email, password);
+                } else {
+                    showToast('error', 'Validation Error', 'Please fill all fields');
+                }
+            });
+            
+            document.getElementById('submitRegister').addEventListener('click', () => {
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                if (name && email && password) {
+                    if (password.length < 6) {
+                        showToast('error', 'Validation Error', 'Password must be at least 6 characters');
+                        return;
+                    }
+                    register(name, email, password);
+                } else {
+                    showToast('error', 'Validation Error', 'Please fill all fields');
+                }
+            });
+            
+            // Close modals on outside click
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('active');
+                    if (e.target.id === 'fileModal') {
+                        resetScreenshotUpload();
+                    }
+                }
+            });
+            
+            // Enter key for forms
+            document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('submitLogin').click();
+                }
+            });
+            
+            document.getElementById('registerPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('submitRegister').click();
+                }
+            });
+            
+            // Load files on start
+            loadFiles();
+        }
+        
+        // Start app
+        document.addEventListener('DOMContentLoaded', initApp);
+        
+        // Global functions for onclick events
+        window.viewFile = viewFile;
+        window.viewScreenshot = viewScreenshot;
+        window.downloadVaultFile = downloadVaultFile;
+    </script>
+</body>
+</html>
